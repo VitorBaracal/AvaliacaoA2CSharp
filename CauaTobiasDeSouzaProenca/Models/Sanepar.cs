@@ -1,5 +1,6 @@
 public class Sanepar
 {
+    public int id { get; set; }
     public string cpf { get; set; } = string.Empty;
 
     public int mes { get; set; }
