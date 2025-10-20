@@ -2,6 +2,7 @@
 using CauaTobiasDeSouzaProenca.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CauaTobiasDeSouzaProenca.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    partial class AppDataContextModelSnapshot : ModelSnapshot
+    [Migration("20251020225112_AtualizacaoColunasTabela")]
+    partial class AtualizacaoColunasTabela
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.21");
@@ -55,9 +58,6 @@ namespace CauaTobiasDeSouzaProenca.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<double>("total")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("valorAgua")
                         .HasColumnType("REAL");
 
                     b.HasKey("id");

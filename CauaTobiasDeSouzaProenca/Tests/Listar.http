@@ -10,6 +10,6 @@ Content-Type: application/json
   "mes": 10,
   "ano": 2025,
   "m3Consumidos": 37.5,
-  "bandeira": "Vermelha1",
+  "bandeira": "Vermelha",
   "possuiEsgoto": true
 }
