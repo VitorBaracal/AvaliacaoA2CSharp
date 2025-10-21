@@ -27,6 +27,31 @@ namespace CauaTobiasDeSouzaProenca.Controllers
                 return Results.NotFound("Nenhum registro foi encontrado!");
             });
 
+            app.MapGet("/api/consumo/buscar/{cpf}/{mes}/{ano}", ([FromServices] AppDataContext ctx, string cpf, int mes, int ano) =>
+            {
+
+                var registro = ctx.Sanepar.FirstOrDefault(x => x.cpf == cpf && x.mes == mes && x.ano == ano);
+
+                if (registro is not null)
+                {
+                    return Results.Ok(registro);
+                }
+                else
+                {
+                    return Results.NotFound("Registro não encontrado para os parâmetros fornecidos.");
+                }
+            });
+
+            app.MapGet("/api/consumo/total-geral", ([FromServices] AppDataContext ctx) =>
+            {
+                if (ctx.Sanepar.Any())
+                {
+                    return Results.Ok(ctx.Sanepar.FirstOrDefault());
+                }
+
+                return Results.NotFound("Nenhum registro foi encontrado!");
+            });
+
             app.MapPost("/api/consumo/cadastrar", ([FromBody] Sanepar sanepar, [FromServices] AppDataContext ctx) =>
             {
                 /*
@@ -45,23 +70,42 @@ namespace CauaTobiasDeSouzaProenca.Controllers
 
                     if (resultado is not null)
                     {
-                        return Results.Conflict("Esse endereço já existe!");
+                        return Results.Conflict("Esse registro de Id já existe!");
                     }
                 }
 
-                // if (sanepar.mes > 1 && sanepar.mes < 12 && sanepar.ano > 2000 && sanepar.m3consumidos > 0)
-                // {
+                Sanepar? resultadoGeral = ctx.Sanepar.FirstOrDefault(x => x.cpf == sanepar.cpf && x.mes == sanepar.mes && x.ano == sanepar.ano);
 
-                // }
+                if (resultadoGeral != null)
+                {
+                    return Results.Conflict("Esse registro de CPF, Mês e Ano já existe!");
+                }
+                else
+                {
 
-                Sanepar novoRegistro = Sanepar.criarRegistro(sanepar.cpf, sanepar.mes, sanepar.ano, sanepar.m3consumidos, sanepar.bandeira, sanepar.possuiEsgoto);
+                    Sanepar novoRegistro = Sanepar.criarRegistro(sanepar.cpf, sanepar.mes, sanepar.ano, sanepar.m3consumidos, sanepar.bandeira, sanepar.possuiEsgoto);
 
-                ctx.Sanepar.Add(novoRegistro);
-                ctx.SaveChanges();
+                    ctx.Sanepar.Add(novoRegistro);
+                    ctx.SaveChanges();
 
-                return Results.Created("", novoRegistro);
+                    return Results.Created("", novoRegistro);
+                }
 
             });
+            
+            app.MapDelete("/api/consumo/remover/{cpf}/{mes}/{ano}", ([FromRoute] string cpf, int ano, int mes, [FromServices] AppDataContext ctx) =>
+            {
+
+              Sanepar? resultado = ctx.Sanepar.Find(cpf, ano, mes);
+
+              if (resultado is null)
+              {
+                  return Results.NotFound("Cpf , ano e mês! Não encontrados");
+              }
+
+              Sanepar.DeletarRegistro(ctx, cpf, mes, ano);
+              return Results.Ok(resultado);
+          });
         }
     }
 }

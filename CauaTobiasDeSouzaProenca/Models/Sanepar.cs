@@ -5,7 +5,7 @@ public class Sanepar
     public int id { get; set; }
 
     public string cpf { get; set; } = string.Empty;
-    
+
     public int mes { get; set; }
 
     public int ano { get; set; }
@@ -28,7 +28,7 @@ public class Sanepar
 
     public double total { get; set; }
 
-    
+
     // Cálculo 1
     public static double ConsumoMinimo(double m3consumidos, double consumoFaturado = 0)
     {
@@ -62,7 +62,7 @@ public class Sanepar
         return ctx.Sanepar.Max(e => e.id) + 1;
     }
 
-    public static Sanepar criarRegistro (string cpf, int mes, int ano, double m3consumidos, string bandeira, bool possuiEsgoto, double consumoFaturado = 0, double tarifa = 0, double adicionalBandeira = 0, double taxaEsgoto = 0, double valorAgua = 0, double total = 0)
+    public static Sanepar criarRegistro(string cpf, int mes, int ano, double m3consumidos, string bandeira, bool possuiEsgoto, double consumoFaturado = 0, double tarifa = 0, double adicionalBandeira = 0, double taxaEsgoto = 0, double valorAgua = 0, double total = 0)
     {
         /*
 
@@ -80,7 +80,7 @@ public class Sanepar
         if (consumoFaturado == 10)
         {
             tarifa = 2.50;
-            
+
         }
         else if (consumoFaturado > 11 && consumoFaturado < 21)
         {
@@ -140,5 +140,19 @@ public class Sanepar
             total = total
 
         };
+
+    }
+
+    public static void DeletarRegistro(AppDataContext ctx, string cpf, int mes, int ano)
+    {
+        var saneparCpf = ctx.Sanepar.Find(cpf);
+        var saneparMes = ctx.Sanepar.Find(mes);
+        var saneparAno = ctx.Sanepar.Find(ano);
+        
+        if (saneparCpf is not null && saneparMes is not null && saneparAno is not null)
+        {
+            ctx.Sanepar.Remove(saneparCpf);
+            ctx.SaveChanges();
+        }        
     }
 }
